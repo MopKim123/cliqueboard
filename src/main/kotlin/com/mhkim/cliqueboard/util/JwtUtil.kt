@@ -15,31 +15,23 @@ class JwtUtil(
     @Value("\${jwt.secret}") secret: String,
     @Value("\${jwt.expiration}") private val expiration: Long
 ) {
-//    private val secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256)
-//    private val expiration = 1000 * 60 * 60 //1 hour
 
     private val secretKey: SecretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret))
 
-    fun generateToken(username: String, role: String): String {
-        val claims = mapOf("role" to role)
+    fun generateToken(username: String): String {
         val now = Date()
         val expiry = Date(now.time + expiration)
 
         return Jwts.builder()
-            .setClaims(claims)
             .setSubject(username)
             .setIssuedAt(now)
             .setExpiration(expiry)
-//            .signWith(secretKey)
             .signWith(secretKey, SignatureAlgorithm.HS256)
             .compact()
     }
 
     fun extractUsername(token: String): String =
         extractAllClaims(token).subject
-
-    fun extractRole(token: String): String =
-        extractAllClaims(token)["role"] as String
 
     fun isTokenValid(token: String): Boolean {
         val claims = extractAllClaims(token)

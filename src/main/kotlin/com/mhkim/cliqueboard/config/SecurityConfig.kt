@@ -23,7 +23,7 @@ class SecurityConfig(
             .cors {  }
             .authorizeHttpRequests {
                 it.requestMatchers("/auth/**").permitAll()
-                it.requestMatchers(HttpMethod.GET, "/courses").permitAll()
+//                it.requestMatchers(HttpMethod.GET, "/courses").permitAll()
                 it.requestMatchers("/ws/**").permitAll()
                     .anyRequest().authenticated()
             }
